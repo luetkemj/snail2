@@ -3,10 +3,17 @@ import Font from "overprint/overprint/font";
 import Cell from "overprint/overprint/cell";
 
 const canvas = document.querySelector("#game");
-// Create a default text grid from the canvas element
-const grid = new TextGrid(canvas, { font: Font("Menlo", false, 15) });
 
+const width = 80;
+const height = 50;
 let player = { x: 10, y: 10 };
+
+// Create a default text grid from the canvas element
+const grid = new TextGrid(canvas, {
+  width,
+  height,
+  font: Font("Menlo", false, 15)
+});
 
 const renderScreen = player => {
   // Predefine a map of cell objects representing text characters
@@ -53,9 +60,8 @@ function input(key) {
 document.addEventListener("keydown", ev => input(ev.key));
 
 function handleAction(action) {
-  console.log(action);
-  const mx = player.x + action.x;
-  const my = player.y + action.y;
+  const mx = Math.min(width - 1, Math.max(0, player.x + action.x));
+  const my = Math.min(height - 1, Math.max(0, player.y + action.y));
 
   player = {
     x: mx,
