@@ -1,3 +1,6 @@
+import store from "./store";
+import { moveEntity } from "./store/actions/entity.actions";
+
 import TextGrid from "overprint/overprint/text-grid";
 import Font from "overprint/overprint/font";
 import Cell from "overprint/overprint/cell";
@@ -6,7 +9,6 @@ const canvas = document.querySelector("#game");
 
 const width = 80;
 const height = 50;
-let player = { x: 10, y: 10 };
 
 // Create a default text grid from the canvas element
 const grid = new TextGrid(canvas, {
@@ -60,13 +62,17 @@ function input(key) {
 document.addEventListener("keydown", ev => input(ev.key));
 
 function handleAction(action) {
+  const player = store.getState().entities[0];
+
+  console.log({ player, action });
   const mx = Math.min(width - 1, Math.max(0, player.x + action.x));
   const my = Math.min(height - 1, Math.max(0, player.y + action.y));
 
-  player = {
-    x: mx,
-    y: my
-  };
+  const payload = { id: 0, x: mx, y: my };
+  console.log({ payload });
+
+  store.dispatch(moveEntity(payload));
+  console.log({ state: store.getState() });
 }
 
 let playerTurn = true;
@@ -93,7 +99,7 @@ function update() {
 
 function gameLoop() {
   update();
-  renderScreen(player);
+  renderScreen(store.getState().entities[0]);
   requestAnimationFrame(gameLoop);
 }
 
