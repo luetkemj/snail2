@@ -2,17 +2,14 @@ import TextGrid from "overprint/overprint/text-grid";
 import Font from "overprint/overprint/font";
 import Cell from "overprint/overprint/cell";
 
+import { WIDTH, HEIGHT } from "./constants";
 import store from "./store";
-
-// these need to be store in constants somewhere
-const width = 80;
-const height = 50;
 
 const canvas = document.querySelector("#game");
 // Create a default text grid from the canvas element
 const grid = new TextGrid(canvas, {
-  width,
-  height,
+  width: WIDTH,
+  height: HEIGHT,
   font: Font("Menlo", false, 15)
 });
 

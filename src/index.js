@@ -1,11 +1,8 @@
 import store from "./store";
 import { moveEntity } from "./store/actions/entity.actions";
 
+import { WIDTH, HEIGHT } from "./constants";
 import { renderScreen } from "./screen";
-
-// these need to be store in constants somewhere
-const width = 80;
-const height = 50;
 
 let action;
 
@@ -31,8 +28,8 @@ document.addEventListener("keydown", ev => input(ev.key));
 function handleAction(action) {
   const player = store.getState().entities[0];
 
-  const mx = Math.min(width - 1, Math.max(0, player.x + action.x));
-  const my = Math.min(height - 1, Math.max(0, player.y + action.y));
+  const mx = Math.min(WIDTH - 1, Math.max(0, player.x + action.x));
+  const my = Math.min(HEIGHT - 1, Math.max(0, player.y + action.y));
 
   const payload = { id: 0, x: mx, y: my };
 
@@ -61,7 +58,7 @@ function update() {
 
 function gameLoop() {
   update();
-  renderScreen(width, height);
+  renderScreen(WIDTH, HEIGHT);
   requestAnimationFrame(gameLoop);
 }
 
