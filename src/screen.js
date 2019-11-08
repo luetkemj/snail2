@@ -1,6 +1,7 @@
 import TextGrid from "overprint/overprint/text-grid";
 import Font from "overprint/overprint/font";
-import Cell from "overprint/overprint/cell";
+
+import sprites from "./sprites";
 
 import { WIDTH, HEIGHT } from "./constants";
 import store from "./store";
@@ -15,24 +16,15 @@ const grid = new TextGrid(canvas, {
 
 export const renderScreen = () => {
   const player = store.getState().entities[0];
+  const { tiles, ids: tileIds } = store.getState().tiles;
 
-  // Predefine a map of cell objects representing text characters
-  // with foreground and background colors
-  const Cells = {
-    Grass: Cell(".", "#37CC63", "#2F3D33"),
-    // Sapling: Cell("^", "#A09A2C", "#2F3D33"),
-    // Tree: Cell("¥", "#337C22", "#2F3D33"),
-    Player: Cell("@", "#aaa", "#2F3D33")
-  };
-
-  // Fill the entire grid
-  grid.fill(Cells.Grass);
-
-  // Render the filled cells to the canvas
-  grid.render();
+  // write tiles
+  tileIds.forEach(id =>
+    grid.writeCell(tiles[id].x, tiles[id].y, sprites[tiles[id].sprite])
+  );
 
   // write player
-  grid.writeCell(player.x, player.y, Cells.Player);
+  grid.writeCell(player.x, player.y, sprites[player.sprite]);
 
   // Re-render the cells that changed since the previous render
   grid.render();

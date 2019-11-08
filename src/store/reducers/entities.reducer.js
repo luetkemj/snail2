@@ -1,10 +1,12 @@
 import { bindActionCreators } from "redux";
 import { MOVE_ENTITY } from "../action-types";
+import { WIDTH, HEIGHT } from "../../constants";
 
 const initialState = {
   0: {
-    x: 10,
-    y: 10
+    x: WIDTH / 2,
+    y: HEIGHT / 2,
+    sprite: "PLAYER"
   }
 };
 
