@@ -1,19 +1,15 @@
-import { WIDTH, HEIGHT } from "../../constants";
-import { rectangle } from "../../lib/grid";
+import { SET_TILES } from "../action-types";
 
-const tiles = rectangle(WIDTH, HEIGHT, "GRASS");
-
-tiles["30,32"] = { ...tiles["30,32"], sprite: "WALL", blocking: true };
-tiles["30,33"] = { ...tiles["30,33"], sprite: "WALL", blocking: true };
-tiles["30,34"] = { ...tiles["30,34"], sprite: "WALL", blocking: true };
-
-const initialState = {
-  tiles,
-  ids: Object.keys(tiles)
-};
+const initialState = {};
 
 export default function(state = initialState, action) {
   switch (action.type) {
+    case SET_TILES: {
+      return {
+        tiles: action.payload.tiles,
+        ids: Object.keys(action.payload.tiles)
+      };
+    }
     default:
       return state;
   }

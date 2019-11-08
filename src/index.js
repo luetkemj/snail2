@@ -1,8 +1,34 @@
 import store from "./store";
-import { moveEntity } from "./store/actions/entity.actions";
+import { moveEntity, placeEntity } from "./store/actions/entity.actions";
+import { generateDungeon } from "./lib/dungeon";
 
 import { WIDTH, HEIGHT } from "./constants";
 import { renderScreen } from "./screen";
+import { addMap, setCurrentMap } from "./store/actions/maps.actions";
+import { setTiles } from "./store/actions/tiles.actions";
+
+// generate map
+const dungeon = generateDungeon({
+  x: 0,
+  y: 0,
+  width: WIDTH,
+  height: HEIGHT,
+  maxRoomCount: 30,
+  minRoomSize: 6,
+  maxRoomSize: 12
+});
+
+// add map to state
+store.dispatch(addMap({ map: dungeon, id: 0 }));
+// set current map
+store.dispatch(setCurrentMap({ id: 0 }));
+// set tiles for rendering on screen
+store.dispatch(setTiles({ tiles: dungeon.tiles }));
+// get center of a random room in dungeon
+const currentMapId = store.getState().maps.current;
+const startingLoc = store.getState().maps.maps[currentMapId].start;
+// place player
+store.dispatch(placeEntity({ id: 0, ...startingLoc }));
 
 let action;
 
