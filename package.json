@@ -8,7 +8,8 @@
     "start": "parcel src/index.html",
     "build": "parcel build src/index.html",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "npm run build && gh-pages -d dist"
+    "predeploy": "rm -rf dist && npm run build --public-url /snail2",
+    "deploy": "gh-pages -d dist"
   },
   "author": "",
   "license": "ISC",
