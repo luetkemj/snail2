@@ -18,6 +18,7 @@
     "rung": "^0.5.0"
   },
   "devDependencies": {
+    "cssnano": "^4.1.10",
     "redux-devtools": "^3.5.0"
   }
 }
