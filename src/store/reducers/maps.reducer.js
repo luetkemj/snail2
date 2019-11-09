@@ -1,7 +1,7 @@
-import { ADD_MAP, SET_CURRENT_MAP } from "../action-types";
+import { ADD_MAP, SET_CURRENT_MAP_ID } from "../action-types";
 
 const initialState = {
-  current: 0,
+  currentMapId: 0,
   maps: { 0: {} }
 };
 
@@ -10,17 +10,17 @@ export default function(state = initialState, action) {
     case ADD_MAP: {
       const { map, id } = action.payload;
       return {
-        current: state.current,
+        currentMapId: state.currentMapId,
         maps: {
           ...state.maps,
           [id]: map
         }
       };
     }
-    case SET_CURRENT_MAP: {
+    case SET_CURRENT_MAP_ID: {
       const { id } = action.payload;
       return {
-        current: id,
+        currentMapId: id,
         maps: state.maps
       };
     }

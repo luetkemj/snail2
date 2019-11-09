@@ -15,8 +15,12 @@ const grid = new TextGrid(canvas, {
 });
 
 export const renderScreen = () => {
+  const { currentMapId } = store.getState().maps;
+  const currentMap = store.getState().maps.maps[currentMapId];
   const player = store.getState().entities[0];
-  const { tiles, ids: tileIds } = store.getState().tiles;
+  const { tiles, ids: tileIds } = currentMap;
+
+  // console.log({ currentMapId, currentMap, player, tiles, tileIds });
 
   // write tiles
   tileIds.forEach(id =>

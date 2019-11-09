@@ -1,5 +1,4 @@
-export const canMoveTo = (x, y, state) => {
-  const { tiles } = state.tiles;
+export const canMoveTo = (x, y, tiles) => {
   if (tiles[`${x},${y}`].blocking) {
     return false;
   }

@@ -19,13 +19,15 @@ const dungeon = generateDungeon({
 });
 
 // add map to state
-store.dispatch(addMap({ map: dungeon, id: 0 }));
+store.dispatch(
+  addMap({ map: { ...dungeon, ids: Object.keys(dungeon.tiles) }, id: 0 })
+);
 // set current map
 store.dispatch(setCurrentMap({ id: 0 }));
-// set tiles for rendering on screen
-store.dispatch(setTiles({ tiles: dungeon.tiles }));
+// // set tiles for rendering on screen
+// store.dispatch(setTiles({ tiles: dungeon.tiles }));
 // get center of a random room in dungeon
-const currentMapId = store.getState().maps.current;
+const currentMapId = store.getState().maps.currentMapId;
 const startingLoc = store.getState().maps.maps[currentMapId].start;
 // place player
 store.dispatch(placeEntity({ id: 0, ...startingLoc }));

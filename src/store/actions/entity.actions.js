@@ -4,9 +4,10 @@ import { canMoveTo } from "../../lib/movement";
 
 export function moveEntity({ id, x, y }) {
   return (dispatch, getState) => {
-    const state = getState();
+    const { currentMapId } = getState().maps;
+    const { tiles } = getState().maps.maps[currentMapId];
 
-    if (canMoveTo(x, y, state)) {
+    if (canMoveTo(x, y, tiles)) {
       return dispatch({
         type: MOVE_ENTITY,
         payload: { id, x, y }

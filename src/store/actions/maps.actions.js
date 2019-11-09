@@ -1,4 +1,4 @@
-import { ADD_MAP, SET_CURRENT_MAP } from "../action-types";
+import { ADD_MAP, SET_CURRENT_MAP_ID } from "../action-types";
 
 export function addMap({ map, id }) {
   return {
@@ -10,7 +10,7 @@ export function addMap({ map, id }) {
 export function setCurrentMap({ id }) {
   1;
   return {
-    type: SET_CURRENT_MAP,
+    type: SET_CURRENT_MAP_ID,
     payload: { id }
   };
 }
