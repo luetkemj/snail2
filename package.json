@@ -6,7 +6,7 @@
   "homepage": "https://luetkemj.github.io/snail2",
   "scripts": {
     "start": "parcel src/index.html",
-    "localProd": "NODE_ENV=production parcel src/index.html",
+    "devDemon": "nodemon -w src -x 'NODE_ENV=production parcel src/index.html'",
     "build": "parcel build src/index.html --public-url /snail2/",
     "test": "echo \"Error: no test specified\" && exit 1",
     "predeploy": "rm -rf dist && npm run build",
@@ -24,6 +24,7 @@
   "devDependencies": {
     "cssnano": "^4.1.10",
     "gh-pages": "^2.1.1",
+    "nodemon": "^1.19.4",
     "redux-devtools": "^3.5.0"
   }
 }
