@@ -4,3 +4,4 @@ export const PLACE_ENTITY = "PLACE_ENTITY";
 export const ADD_MAP = "ADD_MAP";
 export const SET_CURRENT_MAP_ID = "SET_CURRENT_MAP_ID";
 export const SET_MAP_FOV = "SET_MAP_FOV";
+export const UPDATE_MAP_REVEALED = "UPDATE_MAP_REVEALED";

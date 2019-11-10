@@ -1,3 +1,5 @@
+import { distance, idToCell } from "./grid";
+
 const octantTransforms = [
   { xx: 1, xy: 0, yx: 0, yy: 1 },
   { xx: 1, xy: 0, yx: 0, yy: -1 },
@@ -83,13 +85,18 @@ export default function createFOV(
     }
   }
 
-  // return function refresh(originX, originY, radius) {
   reveal(originX, originY);
   for (let octant of octantTransforms) {
     castShadows(originX, originY, 1, 1, 0, octant, radius);
   }
-  // };
 
-  // visible is a Set which Redux doesn't like. So we spread it into an array
-  return [...visible];
+  const visibleIds = [...visible];
+  return {
+    fov: visibleIds,
+    distance: visibleIds.reduce((acc, val) => {
+      const cell = idToCell(val);
+      acc[val] = distance({ x: originX, y: originY }, { x: cell.x, y: cell.y });
+      return acc;
+    }, {})
+  };
 }

@@ -1,4 +1,9 @@
-import { ADD_MAP, SET_CURRENT_MAP_ID, SET_MAP_FOV } from "../action-types";
+import {
+  ADD_MAP,
+  SET_CURRENT_MAP_ID,
+  SET_MAP_FOV,
+  UPDATE_MAP_REVEALED
+} from "../action-types";
 
 const initialState = {
   currentMapId: 0,
@@ -33,6 +38,23 @@ export default function(state = initialState, action) {
       return {
         ...state,
         fov
+      };
+    }
+
+    case UPDATE_MAP_REVEALED: {
+      const { revealed, mapId } = action.payload;
+      const oldRevealed = state.maps[mapId].revealed || [];
+      const newRevealed = [...new Set([...oldRevealed, ...revealed])];
+
+      return {
+        ...state,
+        maps: {
+          ...state.maps,
+          [mapId]: {
+            ...state.maps[mapId],
+            revealed: newRevealed
+          }
+        }
       };
     }
     default:

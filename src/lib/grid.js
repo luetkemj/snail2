@@ -36,3 +36,14 @@ export const rectsIntersect = (rect1, rect2) => {
     rect1.y2 >= rect2.y1
   );
 };
+
+export const distance = (cell1, cell2) => {
+  const x = Math.pow(cell2.x - cell1.x, 2);
+  const y = Math.pow(cell2.y - cell1.y, 2);
+  return Math.floor(Math.sqrt(x + y));
+};
+
+export const idToCell = id => {
+  const coords = id.split(",");
+  return { x: parseInt(coords[0], 10), y: parseInt(coords[1], 10) };
+};
