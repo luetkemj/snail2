@@ -11,9 +11,18 @@ const octantTransforms = [
 
 // width: width of map (or visible map?)
 // height: height of map (or visible map?)
-// reveal - callback to mark a tile as revealed (redux action) should/can we do this in bulk?
-// isOpaque - callback to check if a tile is opaque or not (getState() checker)
-export const createFOV = (width, height, reveal, isOpaque) => {
+export default function createFOV(
+  width,
+  height,
+  originX,
+  originY,
+  tiles,
+  radius
+) {
+  const visible = new Set();
+  const isOpaque = (x, y, tiles) => !!tiles[`${x},${y}`].opaque;
+  const reveal = (x, y) => visible.add(`${x},${y}`);
+
   function castShadows(originX, originY, row, start, end, transform, radius) {
     let newStart = 0;
     if (start < end) return;
@@ -48,7 +57,7 @@ export const createFOV = (width, height, reveal, isOpaque) => {
         }
 
         if (blocked) {
-          if (isOpaque(currentX, currentY)) {
+          if (isOpaque(currentX, currentY, tiles)) {
             newStart = rightSlope;
             continue;
           } else {
@@ -56,7 +65,7 @@ export const createFOV = (width, height, reveal, isOpaque) => {
             start = newStart;
           }
         } else {
-          if (isOpaque(currentX, currentY) && distance < radius) {
+          if (isOpaque(currentX, currentY, tiles) && distance < radius) {
             blocked = true;
             castShadows(
               originX,
@@ -74,10 +83,13 @@ export const createFOV = (width, height, reveal, isOpaque) => {
     }
   }
 
-  return function refresh(originX, originY, radius) {
-    reveal(originX, originY);
-    for (let octant of octantTransforms) {
-      castShadows(originX, originY, 1, 1, 0, octant, radius);
-    }
-  };
-};
+  // return function refresh(originX, originY, radius) {
+  reveal(originX, originY);
+  for (let octant of octantTransforms) {
+    castShadows(originX, originY, 1, 1, 0, octant, radius);
+  }
+  // };
+
+  // visible is a Set which Redux doesn't like. So we spread it into an array
+  return [...visible];
+}

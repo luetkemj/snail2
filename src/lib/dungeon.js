@@ -36,7 +36,7 @@ export const generateDungeon = ({
   // fill the entire space with walls so we can dig it out later
   const { tiles } = rectangle(
     { x, y, width, height },
-    { sprite: "WALL", blocking: true }
+    { sprite: "WALL", blocking: true, opaque: true }
   );
 
   const rng = rung();
@@ -53,7 +53,7 @@ export const generateDungeon = ({
     // todo: perf - don't bother filling this in here - wait till it's accepted
     const candidate = rectangle(
       { x: rx, y: ry, width: rw, height: rh, hasWalls: true },
-      { sprite: "FLOOR" }
+      { sprite: "FLOOR", blocking: false, opaque: false }
     );
 
     if (!rooms.some(room => rectsIntersect(room, candidate))) {

@@ -15,17 +15,24 @@ const grid = new TextGrid(canvas, {
 });
 
 export const renderScreen = () => {
+  grid.clear();
   const { currentMapId } = store.getState().maps;
   const currentMap = store.getState().maps.maps[currentMapId];
   const player = store.getState().entities[0];
   const { tiles, ids: tileIds } = currentMap;
 
-  // console.log({ currentMapId, currentMap, player, tiles, tileIds });
+  const { fov } = store.getState().maps;
+  // const fov = createFov(WIDTH, HEIGHT, player.x, player.y, tiles, 8);
 
   // write tiles
-  tileIds.forEach(id =>
-    grid.writeCell(tiles[id].x, tiles[id].y, sprites[tiles[id].sprite])
-  );
+  tileIds.forEach(id => {
+    // if (revealed.includes(id)) {
+    //   grid.writeCell(tiles[id].x, tiles[id].y, sprites[tiles[id].sprite].UNLIT);
+    // }
+    if (fov.includes(id)) {
+      grid.writeCell(tiles[id].x, tiles[id].y, sprites[tiles[id].sprite].LIT);
+    }
+  });
 
   // write player
   grid.writeCell(player.x, player.y, sprites[player.sprite]);

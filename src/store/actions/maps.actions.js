@@ -1,4 +1,4 @@
-import { ADD_MAP, SET_CURRENT_MAP_ID } from "../action-types";
+import { ADD_MAP, SET_CURRENT_MAP_ID, SET_MAP_FOV } from "../action-types";
 
 export function addMap({ map, id }) {
   return {
@@ -12,5 +12,12 @@ export function setCurrentMap({ id }) {
   return {
     type: SET_CURRENT_MAP_ID,
     payload: { id }
+  };
+}
+
+export function setMapFov({ fov }) {
+  return {
+    type: SET_MAP_FOV,
+    payload: { fov }
   };
 }

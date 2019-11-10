@@ -1,8 +1,10 @@
-import { ADD_MAP, SET_CURRENT_MAP_ID } from "../action-types";
+import { ADD_MAP, SET_CURRENT_MAP_ID, SET_MAP_FOV } from "../action-types";
 
 const initialState = {
   currentMapId: 0,
-  maps: { 0: {} }
+  fov: [],
+  fovs: {},
+  maps: {}
 };
 
 export default function(state = initialState, action) {
@@ -17,11 +19,20 @@ export default function(state = initialState, action) {
         }
       };
     }
+
     case SET_CURRENT_MAP_ID: {
       const { id } = action.payload;
       return {
-        currentMapId: id,
-        maps: state.maps
+        ...state,
+        currentMapId: id
+      };
+    }
+
+    case SET_MAP_FOV: {
+      const { fov, id } = action.payload;
+      return {
+        ...state,
+        fov
       };
     }
     default:
