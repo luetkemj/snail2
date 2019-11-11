@@ -1,4 +1,19 @@
+import { sample } from "lodash";
 import store from "../store";
+
+const CARDINAL = [
+  { x: -1, y: 0 },
+  { x: 1, y: 0 },
+  { x: 0, y: -1 },
+  { x: 0, y: 1 }
+];
+
+export const drunkenWalk = (startX, startY) => {
+  const direction = sample(CARDINAL);
+  const x = startX + direction.x;
+  const y = startY + direction.y;
+  return { x, y };
+};
 
 export const canMoveTo = (x, y) => {
   const { currentMapId } = store.getState().maps;
@@ -7,10 +22,8 @@ export const canMoveTo = (x, y) => {
   const { entities } = store.getState();
   const locId = `${x},${y}`;
 
-  // console.log({ currentMapId, currentMap, tiles, entityIds, entities });
-
   if (tiles[locId].blocking) {
-    console.log("WALL");
+    // console.log("WALL");
     return false;
   }
 

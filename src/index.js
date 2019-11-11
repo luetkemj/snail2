@@ -3,6 +3,7 @@ import { init } from "./game";
 import { moveEntity } from "./store/actions/entity.actions";
 import { WIDTH, HEIGHT } from "./constants";
 import { renderScreen } from "./screen";
+import { drunkenWalk } from "./lib/movement";
 
 init();
 
@@ -48,7 +49,18 @@ function update() {
   }
 
   if (!playerTurn) {
-    console.log("not your turn");
+    const { currentMapId } = store.getState().maps;
+    const currentMap = store.getState().maps.maps[currentMapId];
+    const { entityIds } = currentMap;
+    const { entities } = store.getState();
+
+    for (let id of entityIds) {
+      if (id !== 0) {
+        const newLoc = drunkenWalk(entities[id].x, entities[id].y);
+        store.dispatch(moveEntity({ id, x: newLoc.x, y: newLoc.y }));
+      }
+    }
+
     // for (let entity of stage.entities) {
     //   if (entity.hasVolition()) {
     //     entity.takeTurn(stage);
