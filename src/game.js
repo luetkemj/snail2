@@ -1,18 +1,19 @@
-import { keyBy, sample, times } from "lodash";
-import store from "./store";
-import { addEntities, placeEntity } from "./store/actions/entity.actions";
-import { setEntityLocations } from "./store/actions/maps.actions";
+import state from "./state";
+
+import { sample, times } from "lodash";
 import { generateDungeon } from "./lib/dungeon";
 import { idToCell } from "./lib/grid";
 
 import { WIDTH, HEIGHT } from "./constants";
-import {
-  addMap,
-  setCurrentMap,
-  setMapEntities
-} from "./store/actions/maps.actions";
 import createFov from "./lib/fov";
-import { setMapFov } from "./store/actions/maps.actions";
+import {
+  setMap,
+  setMapFov,
+  setCurrentMapId,
+  setMapEntityIds,
+  setMapEntityLocations
+} from "./state/setters/map-setters";
+import { setEntityLocation, setEntity } from "./state/setters/entity-setters";
 
 export const init = () => {
   // generate map
@@ -27,17 +28,14 @@ export const init = () => {
   });
 
   // add map to state
-  store.dispatch(
-    addMap({ map: { ...dungeon, tileIds: Object.keys(dungeon.tiles) }, id: 0 })
-  );
-  store.dispatch(setCurrentMap({ id: 0 }));
+  setMap({ ...dungeon, tileIds: Object.keys(dungeon.tiles), id: 0 });
+  setCurrentMapId(0);
 
-  const currentMapId = store.getState().maps.currentMapId;
-  const currentMap = store.getState().maps.maps[currentMapId];
+  const currentMapId = state.maps.currentMapId;
+  const currentMap = state.maps[currentMapId];
+  const startingLoc = state.maps[currentMapId].start;
 
-  // place player
-  const startingLoc = currentMap.start;
-  store.dispatch(placeEntity({ id: 0, ...startingLoc }));
+  setEntityLocation(startingLoc.x, startingLoc.y, 0);
 
   // generate baddies
   const { openTileIds } = currentMap;
@@ -58,13 +56,10 @@ export const init = () => {
     }
   });
 
-  store.dispatch(
-    setMapEntities({
-      entityIds: [0, ...monsters.map(monster => monster.id)],
-      mapId: currentMapId
-    })
-  );
-  store.dispatch(addEntities({ entities: keyBy(monsters, "id") }));
+  monsters.forEach(monster => {
+    setEntity(monster);
+  });
+  setMapEntityIds([0, ...monsters.map(monster => monster.id)], 0);
 
   const entityLocations = {
     [`${startingLoc.x},${startingLoc.y}`]: [0],
@@ -75,13 +70,10 @@ export const init = () => {
       return acc;
     }, {})
   };
-  store.dispatch(setEntityLocations({ entityLocations, mapId: currentMapId }));
+  setMapEntityLocations(entityLocations, currentMapId);
 
   // set initial fov
-  const { tiles } = store.getState().maps.maps[currentMapId];
-  store.dispatch(
-    setMapFov({
-      fov: createFov(WIDTH, HEIGHT, startingLoc.x, startingLoc.y, tiles, 8)
-    })
-  );
+  const tiles = state.maps[currentMapId].tiles;
+  const fov = createFov(WIDTH, HEIGHT, startingLoc.x, startingLoc.y, tiles, 8);
+  setMapFov(fov);
 };

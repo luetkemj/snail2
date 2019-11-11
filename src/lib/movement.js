@@ -1,5 +1,13 @@
 import { sample } from "lodash";
-import store from "../store";
+import state from "../state";
+import { setEntityLocation } from "../state/setters/entity-setters";
+import {
+  setMapEntityLocations,
+  setMapRevealed,
+  setMapFov
+} from "../state/setters/map-setters";
+import createFov from "./fov";
+import { WIDTH, HEIGHT } from "../constants";
 
 const CARDINAL = [
   { x: -1, y: 0 },
@@ -16,10 +24,10 @@ export const drunkenWalk = (startX, startY) => {
 };
 
 export const canMoveTo = (x, y) => {
-  const { currentMapId } = store.getState().maps;
-  const currentMap = store.getState().maps.maps[currentMapId];
+  const { currentMapId } = state.maps;
+  const currentMap = state.maps[currentMapId];
   const { tiles, entityLocations } = currentMap;
-  const { entities } = store.getState();
+  const { entities } = state;
   const locId = `${x},${y}`;
 
   if (tiles[locId].blocking) {
@@ -40,4 +48,31 @@ export const canMoveTo = (x, y) => {
   }
 
   return true;
+};
+
+export const attemptMove = (x, y, id) => {
+  const { currentMapId } = state.maps;
+  const currentMap = state.maps[currentMapId];
+  const { tiles } = currentMap;
+
+  if (canMoveTo(x, y)) {
+    if (id === 0) {
+      const fov = createFov(WIDTH, HEIGHT, x, y, tiles, 8);
+      setMapFov(fov);
+      setMapRevealed(fov.fov, currentMapId);
+    }
+
+    setEntityLocation(x, y, id);
+
+    const { entityIds } = state.maps[currentMapId];
+    const { entities } = state;
+    const newEntityLocations = entityIds.reduce((acc, entityId) => {
+      const locId = `${entities[entityId].x},${entities[entityId].y}`;
+      acc[locId] = acc[locId] || [];
+      acc[locId].push(entityId);
+      return acc;
+    }, {});
+
+    setMapEntityLocations(newEntityLocations, currentMapId);
+  }
 };

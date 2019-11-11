@@ -4,7 +4,8 @@ import Font from "overprint/overprint/font";
 import sprites from "./sprites";
 
 import { WIDTH, HEIGHT } from "./constants";
-import store from "./store";
+
+import state from "./state";
 
 const canvas = document.querySelector("#game");
 // Create a default text grid from the canvas element
@@ -16,17 +17,17 @@ const grid = new TextGrid(canvas, {
 
 export const renderScreen = () => {
   grid.clear();
-  const { currentMapId } = store.getState().maps;
-  const currentMap = store.getState().maps.maps[currentMapId];
-  const player = store.getState().entities[0];
+  const { currentMapId } = state.maps;
+  const currentMap = state.maps[currentMapId];
+  const player = state.entities[0];
 
-  const { entities } = store.getState();
+  const { entities } = state;
   const { entityIds } = currentMap;
 
   const { tiles, tileIds, revealedTileIds = [] } = currentMap;
   const {
     fov: { fov, distance }
-  } = store.getState().maps;
+  } = state.maps;
 
   // write tiles
   tileIds.forEach(id => {
