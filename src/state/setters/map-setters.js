@@ -7,11 +7,15 @@ export const setCurrentMapId = mapId => (state.maps.currentMapId = mapId);
 
 export const setMapFov = fov => (state.maps.fov = fov);
 
-export const setMapRevealed = (revealedTileIds, mapId) =>
-  uniq(state.maps[mapId].revealedTileIds.concat(revealedTileIds));
+export const setMapRevealed = (revealedTileIds, mapId) => {
+  const previouslyRevealedTileIds = state.maps[mapId].revealedTileIds || [];
+  state.maps[mapId].revealedTileIds = uniq(
+    previouslyRevealedTileIds.concat(revealedTileIds)
+  );
+};
 
-export const setMapEntities = (entityIds, mapId) =>
+export const setMapEntityIds = (entityIds, mapId) =>
   (state.maps[mapId].entityIds = entityIds);
 
-export const setEntityLocations = (entityLocations, mapId) =>
+export const setMapEntityLocations = (entityLocations, mapId) =>
   (state.maps[mapId].entityLocations = entityLocations);
