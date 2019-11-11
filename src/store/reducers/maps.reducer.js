@@ -2,14 +2,26 @@ import {
   ADD_MAP,
   SET_CURRENT_MAP_ID,
   SET_MAP_FOV,
-  UPDATE_MAP_REVEALED
+  UPDATE_MAP_REVEALED,
+  SET_MAP_ENTITIES,
+  SET_ENTITY_LOCATIONS
 } from "../action-types";
 
 const initialState = {
   currentMapId: 0,
   fov: [],
   fovs: {},
-  maps: {}
+  maps: {
+    0: {
+      tiles: {},
+      start: {},
+      openTileIds: [],
+      tileIds: [],
+      entityIds: [],
+      revealedTileIds: [],
+      entityLocations: {}
+    }
+  }
 };
 
 export default function(state = initialState, action) {
@@ -42,9 +54,11 @@ export default function(state = initialState, action) {
     }
 
     case UPDATE_MAP_REVEALED: {
-      const { revealed, mapId } = action.payload;
-      const oldRevealed = state.maps[mapId].revealed || [];
-      const newRevealed = [...new Set([...oldRevealed, ...revealed])];
+      const { revealedTileIds, mapId } = action.payload;
+      const oldRevealedTileIds = state.maps[mapId].revealedTileIds || [];
+      const newRevealedTileIds = [
+        ...new Set([...oldRevealedTileIds, ...revealedTileIds])
+      ];
 
       return {
         ...state,
@@ -52,11 +66,40 @@ export default function(state = initialState, action) {
           ...state.maps,
           [mapId]: {
             ...state.maps[mapId],
-            revealed: newRevealed
+            revealedTileIds: newRevealedTileIds
           }
         }
       };
     }
+
+    case SET_MAP_ENTITIES: {
+      const { entityIds, mapId } = action.payload;
+      return {
+        ...state,
+        maps: {
+          ...state.maps,
+          [mapId]: {
+            ...state.maps[mapId],
+            entityIds
+          }
+        }
+      };
+    }
+
+    case SET_ENTITY_LOCATIONS: {
+      const { entityLocations, mapId } = action.payload;
+      return {
+        ...state,
+        maps: {
+          ...state.maps,
+          [mapId]: {
+            ...state.maps[mapId],
+            entityLocations
+          }
+        }
+      };
+    }
+
     default:
       return state;
   }

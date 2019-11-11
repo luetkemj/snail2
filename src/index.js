@@ -1,45 +1,10 @@
 import store from "./store";
-import { moveEntity, placeEntity } from "./store/actions/entity.actions";
-import { generateDungeon } from "./lib/dungeon";
-
+import { init } from "./game";
+import { moveEntity } from "./store/actions/entity.actions";
 import { WIDTH, HEIGHT } from "./constants";
 import { renderScreen } from "./screen";
-import { addMap, setCurrentMap } from "./store/actions/maps.actions";
-import createFov from "./lib/fov";
-import { setMapFov } from "./store/actions/maps.actions";
 
-// generate map
-const dungeon = generateDungeon({
-  x: 0,
-  y: 0,
-  width: WIDTH,
-  height: HEIGHT,
-  maxRoomCount: 30,
-  minRoomSize: 6,
-  maxRoomSize: 12
-});
-
-// add map to state
-store.dispatch(
-  addMap({ map: { ...dungeon, ids: Object.keys(dungeon.tiles) }, id: 0 })
-);
-// set current map
-store.dispatch(setCurrentMap({ id: 0 }));
-// // set tiles for rendering on screen
-// store.dispatch(setTiles({ tiles: dungeon.tiles }));
-// get center of a random room in dungeon
-const currentMapId = store.getState().maps.currentMapId;
-const startingLoc = store.getState().maps.maps[currentMapId].start;
-const { tiles } = store.getState().maps.maps[currentMapId];
-
-// place player
-store.dispatch(placeEntity({ id: 0, ...startingLoc }));
-// set initial fov
-store.dispatch(
-  setMapFov({
-    fov: createFov(WIDTH, HEIGHT, startingLoc.x, startingLoc.y, tiles, 8)
-  })
-);
+init();
 
 let action;
 

@@ -1,11 +1,12 @@
-import { MOVE_ENTITY, PLACE_ENTITY } from "../action-types";
+import { ADD_ENTITIES, MOVE_ENTITY, PLACE_ENTITY } from "../action-types";
 import { WIDTH, HEIGHT } from "../../constants";
 
 const initialState = {
   0: {
     x: WIDTH / 2,
     y: HEIGHT / 2,
-    sprite: "PLAYER"
+    sprite: "PLAYER",
+    blocking: true
   }
 };
 
@@ -38,6 +39,14 @@ export default function(state = initialState, action) {
       return {
         ...state,
         [id]: entity
+      };
+    }
+
+    case ADD_ENTITIES: {
+      const { entities } = action.payload;
+      return {
+        ...state,
+        ...entities
       };
     }
     default:

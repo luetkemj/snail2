@@ -2,7 +2,9 @@ import {
   ADD_MAP,
   SET_CURRENT_MAP_ID,
   SET_MAP_FOV,
-  UPDATE_MAP_REVEALED
+  UPDATE_MAP_REVEALED,
+  SET_MAP_ENTITIES,
+  SET_ENTITY_LOCATIONS
 } from "../action-types";
 
 export function addMap({ map, id }) {
@@ -27,9 +29,23 @@ export function setMapFov({ fov }) {
   };
 }
 
-export function updateMapRevealed({ mapId, revealed }) {
+export function updateMapRevealed({ mapId, revealedTileIds }) {
   return {
     type: UPDATE_MAP_REVEALED,
-    payload: { mapId, revealed }
+    payload: { mapId, revealedTileIds }
+  };
+}
+
+export function setMapEntities({ entityIds, mapId }) {
+  return {
+    type: SET_MAP_ENTITIES,
+    payload: { entityIds, mapId }
+  };
+}
+
+export function setEntityLocations({ entityLocations, mapId }) {
+  return {
+    type: SET_ENTITY_LOCATIONS,
+    payload: { entityLocations, mapId }
   };
 }

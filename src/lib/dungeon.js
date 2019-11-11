@@ -81,5 +81,11 @@ export const generateDungeon = ({
     prevRoom = room;
   }
 
-  return { tiles: { ...tiles, ...roomTiles }, start: rooms[0].center };
+  const processedTiles = { ...tiles, ...roomTiles };
+
+  const openTileIds = Object.keys(processedTiles).filter(
+    tileId => !processedTiles[tileId].blocking
+  );
+
+  return { tiles: processedTiles, start: rooms[0].center, openTileIds };
 };
