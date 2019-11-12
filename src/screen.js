@@ -31,17 +31,34 @@ export const renderScreen = () => {
 
   // write tiles
   tileIds.forEach(id => {
-    if (revealedTileIds.includes(id)) {
-      grid.writeCell(tiles[id].x, tiles[id].y, sprites[tiles[id].sprite].UNLIT);
-    }
-    if (fov.includes(id)) {
+    if (!state.config.omniscience) {
+      if (revealedTileIds.includes(id)) {
+        grid.writeCell(
+          tiles[id].x,
+          tiles[id].y,
+          sprites[tiles[id].sprite].UNLIT
+        );
+      }
+      if (fov.includes(id)) {
+        grid.writeCell(tiles[id].x, tiles[id].y, sprites[tiles[id].sprite].LIT);
+      }
+    } else {
       grid.writeCell(tiles[id].x, tiles[id].y, sprites[tiles[id].sprite].LIT);
     }
   });
 
   entityIds.forEach(id => {
     const entityLocId = `${entities[id].x},${entities[id].y}`;
-    if (fov.includes(entityLocId)) {
+
+    if (!state.config.omniscience) {
+      if (fov.includes(entityLocId)) {
+        grid.writeCell(
+          entities[id].x,
+          entities[id].y,
+          sprites[entities[id].sprite]
+        );
+      }
+    } else {
       grid.writeCell(
         entities[id].x,
         entities[id].y,

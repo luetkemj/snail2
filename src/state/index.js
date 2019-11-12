@@ -1,12 +1,10 @@
+import { PLAYER } from "../entities";
+
 const state = {
-  entities: {
-    0: {
-      x: 0,
-      y: 0,
-      sprite: "PLAYER",
-      blocking: true
-    }
+  config: {
+    omniscience: false
   },
+  entities: { 0: { ...PLAYER } },
   maps: {
     currentMapId: 0,
     fov: [],

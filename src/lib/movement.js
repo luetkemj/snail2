@@ -23,28 +23,31 @@ export const drunkenWalk = (startX, startY) => {
   return { x, y };
 };
 
-export const canMoveTo = (x, y) => {
+export const canMoveTo = (x, y, id) => {
   const { currentMapId } = state.maps;
   const currentMap = state.maps[currentMapId];
   const { tiles, entityLocations } = currentMap;
   const { entities } = state;
   const locId = `${x},${y}`;
 
+  // if walking into blocking tile - WALL
   if (tiles[locId].blocking) {
-    // console.log("WALL");
     return false;
   }
 
+  // if walking into blocking entity - MONSTER / PLAYER
   if (entityLocations[locId]) {
-    let somethingInTheWay = false;
-    entityLocations[locId].forEach(entityId => {
-      if (entities[entityId].blocking) {
-        somethingInTheWay = true;
-      }
-      return false;
-    });
+    const blockingEntities = entityLocations[locId].map(
+      entityId => entities[entityId]
+    );
 
-    if (somethingInTheWay) return false;
+    if (blockingEntities.length) {
+      blockingEntities.forEach(entity =>
+        console.log(`${entities[id].name} bumps into ${entity.name}`)
+      );
+
+      return false;
+    }
   }
 
   return true;
@@ -55,7 +58,7 @@ export const attemptMove = (x, y, id) => {
   const currentMap = state.maps[currentMapId];
   const { tiles } = currentMap;
 
-  if (canMoveTo(x, y)) {
+  if (canMoveTo(x, y, id)) {
     if (id === 0) {
       const fov = createFov(WIDTH, HEIGHT, x, y, tiles, 8);
       setMapFov(fov);

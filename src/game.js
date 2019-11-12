@@ -1,11 +1,6 @@
-import state from "./state";
-
 import { sample, times } from "lodash";
-import { generateDungeon } from "./lib/dungeon";
-import { idToCell } from "./lib/grid";
 
-import { WIDTH, HEIGHT } from "./constants";
-import createFov from "./lib/fov";
+import state from "./state";
 import {
   setMap,
   setMapFov,
@@ -14,6 +9,40 @@ import {
   setMapEntityLocations
 } from "./state/setters/map-setters";
 import { setEntityLocation, setEntity } from "./state/setters/entity-setters";
+
+import { generateDungeon } from "./lib/dungeon";
+import { idToCell } from "./lib/grid";
+import createFov from "./lib/fov";
+
+import { WIDTH, HEIGHT } from "./constants";
+import { MONSTER } from "./entities";
+
+const goblinNames = [
+  "Akbug",
+  "Argav",
+  "Brigadve",
+  "Corbakl",
+  "Cruncha",
+  "Frum",
+  "Gelmax",
+  "Glibl",
+  "Glogroth Von Bloov",
+  "Glovd",
+  "Gorf",
+  "Grelth",
+  "Grickstah",
+  "Griga",
+  "Groovilla Dar Trog",
+  "Khroongah",
+  "Kosrik",
+  "Makdur",
+  "Porgl",
+  "Throngul",
+  "Thuk",
+  "Tryxtah",
+  "Vorlag",
+  "Yorvua"
+];
 
 export const init = () => {
   // generate map
@@ -47,10 +76,10 @@ export const init = () => {
   spawnLocations.forEach(spawnLoc => {
     if (spawnLoc !== startingLoc) {
       monsters.push({
+        ...MONSTER,
         ...idToCell(spawnLoc),
         id: currentMonsterId,
-        sprite: "MONSTER",
-        blocking: true
+        name: sample(goblinNames)
       });
       currentMonsterId++;
     }

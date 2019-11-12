@@ -3,7 +3,6 @@ import { init } from "./game";
 import { WIDTH, HEIGHT } from "./constants";
 import { renderScreen } from "./screen";
 import { attemptMove, drunkenWalk } from "./lib/movement";
-import { setEntityLocation } from "./state/setters/entity-setters";
 
 init();
 
@@ -11,6 +10,10 @@ let action;
 
 function input(key) {
   switch (key) {
+    case "z": {
+      action = "REST";
+      break;
+    }
     case "ArrowUp":
       action = { x: 0, y: -1 };
       break;
@@ -29,6 +32,10 @@ function input(key) {
 document.addEventListener("keydown", ev => input(ev.key));
 
 function handleAction(action) {
+  if (action === "REST") {
+    return;
+  }
+
   const player = state.entities[0];
 
   const mx = Math.min(WIDTH - 1, Math.max(0, player.x + action.x));
@@ -41,6 +48,7 @@ let playerTurn = true;
 
 function update() {
   if (action && playerTurn) {
+    console.log(action);
     handleAction(action);
     action = null;
     playerTurn = false;
