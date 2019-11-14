@@ -10,6 +10,10 @@ let action;
 
 function input(key) {
   switch (key) {
+    case "o": {
+      action = "TOGGLE_OMNISCIENCE";
+      break;
+    }
     case "z": {
       action = "REST";
       break;
@@ -33,6 +37,11 @@ document.addEventListener("keydown", ev => input(ev.key));
 
 function handleAction(action) {
   if (action === "REST") {
+    return;
+  }
+
+  if (action === "TOGGLE_OMNISCIENCE") {
+    state.config.omniscience = !state.config.omniscience;
     return;
   }
 

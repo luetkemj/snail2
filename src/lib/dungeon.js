@@ -1,6 +1,7 @@
 import rung from "rung/src/rung";
-import { compact } from "lodash";
-import { rectangle, rectsIntersect } from "./grid";
+import { compact, times } from "lodash";
+import { rectangle, rectsIntersect, isOnMapEdge } from "./grid";
+import { drunkenWalk } from "./movement";
 
 function digHorizontalPassage(tiles, x1, x2, y) {
   const start = Math.min(x1, x2);
@@ -23,6 +24,21 @@ function digVerticalPassage(tiles, y1, y2, x) {
     y++;
   }
 }
+
+const digDrunkenWalk = (x, y, tiles) => {
+  let loc = drunkenWalk(x, y);
+  // if new loc is a tile and not on the map edge
+  if (tiles[`${[loc.x]},${[loc.y]}`] && !isOnMapEdge(loc.x, loc.y)) {
+    tiles[`${loc.x},${loc.y}`] = {
+      x: loc.x,
+      y: loc.y,
+      sprite: "CAVERN_FLOOR"
+    };
+    return { x: loc.x, y: loc.y };
+  } else {
+    return { x, y };
+  }
+};
 
 export const generateDungeon = ({
   x,
@@ -82,6 +98,10 @@ export const generateDungeon = ({
   }
 
   const processedTiles = { ...tiles, ...roomTiles };
+  let digLoc = { x: width / 2, y: height / 2 };
+  for (let i = 0; i < 1000; i++) {
+    digLoc = digDrunkenWalk(digLoc.x, digLoc.y, processedTiles);
+  }
 
   const openTileIds = Object.keys(processedTiles).filter(
     tileId => !processedTiles[tileId].blocking

@@ -15,6 +15,22 @@ const grid = new TextGrid(canvas, {
   font: Font("Menlo", false, 15)
 });
 
+grid.onClick((x, y) => {
+  const locId = `${x},${y}`;
+  const currentMap = state.maps[state.maps.currentMapId];
+  const entities = currentMap.entityLocations[locId] || [];
+
+  console.log({
+    locId,
+    x,
+    y,
+    tile: currentMap.tiles[locId],
+    entities: entities.map(id => state.entities[id]),
+    inFov: state.maps.fov.fov.includes(locId),
+    fovDistance: state.maps.fov.distance[locId]
+  });
+});
+
 export const renderScreen = () => {
   grid.clear();
   const { currentMapId } = state.maps;

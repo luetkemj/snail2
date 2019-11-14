@@ -1,3 +1,5 @@
+import { WIDTH, HEIGHT } from "../constants";
+
 export const rectangle = ({ x, y, width, height, hasWalls }, tileProps) => {
   const tiles = {};
 
@@ -46,4 +48,12 @@ export const distance = (cell1, cell2) => {
 export const idToCell = id => {
   const coords = id.split(",");
   return { x: parseInt(coords[0], 10), y: parseInt(coords[1], 10) };
+};
+
+export const isOnMapEdge = (x, y) => {
+  if (x === 0) return true; // north edge
+  if (y === 0) return true; // west edge
+  if (x === WIDTH - 1) return true; // south edge
+  if (y === HEIGHT - 1) return true; // east edge
+  return false;
 };
