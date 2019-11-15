@@ -72,8 +72,11 @@ function update() {
 
     for (let id of entityIds) {
       if (id !== 0) {
-        const newLoc = drunkenWalk(entities[id].x, entities[id].y);
-        attemptMove(newLoc.x, newLoc.y, id);
+        // skip turn if dead
+        if (entities[id].health > 0) {
+          const newLoc = drunkenWalk(entities[id].x, entities[id].y);
+          attemptMove(newLoc.x, newLoc.y, id);
+        }
       }
     }
     playerTurn = true;

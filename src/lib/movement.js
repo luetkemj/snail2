@@ -37,14 +37,14 @@ export const canMoveTo = (x, y, id) => {
 
   // if walking into blocking entity - MONSTER / PLAYER
   if (entityLocations[locId]) {
-    const blockingEntities = entityLocations[locId].map(
-      entityId => entities[entityId]
+    const blockers = entityLocations[locId].filter(
+      entityId => entities[entityId].blocking
     );
 
+    const blockingEntities = blockers.map(entityId => entities[entityId]);
+
     if (blockingEntities.length) {
-      blockingEntities.forEach(entity =>
-        console.log(`${entities[id].name} bumps into ${entity.name}`)
-      );
+      blockingEntities.forEach(entity => bump(entities[id], entity));
 
       return false;
     }
@@ -78,4 +78,25 @@ export const attemptMove = (x, y, id) => {
 
     setMapEntityLocations(newEntityLocations, currentMapId);
   }
+};
+
+const bump = (self, target) => {
+  console.log(`${self.name} bumps into ${target.name}`);
+  attack(self, target);
+};
+
+const attack = (self, target) => {
+  const damage = 5;
+  target.health -= 5;
+  console.log(`${self.name} attacks ${target.name} for ${damage} hp`);
+
+  if (target.health <= 0) {
+    kill(target);
+    console.log(`${self.name} kills ${target.name}`);
+  }
+};
+
+const kill = target => {
+  target.blocking = false;
+  target.sprite = "CORPSE";
 };
