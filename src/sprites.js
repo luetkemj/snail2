@@ -4,6 +4,7 @@ export default {
   PLAYER: Cell("@", "#DAA520"),
   MONSTER: Cell("M", "#0C9"),
   CORPSE: Cell("%", "#ff6347"),
+  POTION: Cell("!", "#DAA520"),
   WALL: {
     LIT: Cell("#", "#AAA"),
     UNLIT: Cell("#", "#666")

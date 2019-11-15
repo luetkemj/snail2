@@ -19,3 +19,17 @@ export const MONSTER = {
   health: 10,
   type: "MONSTER"
 };
+
+export const PICKUP = {
+  id: 0,
+  x: 0,
+  y: 0,
+  name: "",
+  sprite: "POTION",
+  blocking: false,
+  buff: {
+    prop: "health",
+    n: 10
+  },
+  type: "PICKUP"
+};
