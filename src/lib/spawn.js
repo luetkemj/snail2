@@ -1,6 +1,6 @@
 import { sample, times } from "lodash";
 import state from "../state";
-import { MONSTER, PICKUP } from "../entities";
+import { PLAYER, MONSTER, PICKUP } from "../entities";
 import { setEntityLocation, setEntity } from "../state/setters/entity-setters";
 import {
   addMapEntityLocations,
@@ -8,12 +8,16 @@ import {
 } from "../state/setters/map-setters";
 import { idToCell } from "./grid";
 
-export const spawnPlayer = (loc, mapId = state.maps.currentMapId) => {
-  const locId = `${loc.x},${loc.y}`;
-  setEntityLocation(loc.x, loc.y, 0);
-  addMapEntityIds([0], mapId);
-  addMapEntityLocations({ [locId]: [0] }, mapId);
+const hatch = (egg, mapId) => {
+  const { x, y, id } = egg;
+  setEntity(egg);
+  setEntityLocation(x, y, id);
+  addMapEntityIds([id], mapId);
+  addMapEntityLocations({ [`${x},${y}`]: [id] }, mapId);
 };
+
+export const spawnPlayer = (loc, mapId = state.maps.currentMapId) =>
+  hatch({ ...PLAYER, x: loc.x, y: loc.y, id: 0 }, mapId);
 
 export const spawnMonsters = ({ count, mapId = state.maps.currentMapId }) => {
   const currentMap = state.maps[mapId];
@@ -45,56 +49,61 @@ export const spawnMonsters = ({ count, mapId = state.maps.currentMapId }) => {
     "Yorvua"
   ];
 
-  const spawnLocations = [];
-  times(count, () => spawnLocations.push(sample(openTileIds)));
-  let currentMonsterId = currentMap.entityIds.length;
-  const monsters = [];
-
-  spawnLocations.forEach(spawnLoc => {
+  times(count, () => {
+    let currentMonsterId = currentMap.entityIds.length;
+    const spawnLoc = sample(openTileIds);
     if (!Object.keys(currentMap.entityLocations).includes(spawnLoc)) {
-      monsters.push({
+      const egg = {
         ...MONSTER,
         ...idToCell(spawnLoc),
         id: currentMonsterId,
         name: sample(goblinNames)
-      });
-      currentMonsterId++;
+      };
+      hatch(egg, mapId);
     }
-  });
-
-  monsters.forEach(monster => {
-    const spawnLoc = `${monster.x},${monster.y}`;
-    setEntity(monster);
-    addMapEntityIds([monster.id], mapId);
-    addMapEntityLocations({ [spawnLoc]: [monster.id] }, mapId);
   });
 };
 
 export const spawnPickups = ({ count, mapId = state.maps.currentMapId }) => {
   const currentMap = state.maps[mapId];
   const { openTileIds } = currentMap;
-  // generate pickups
-  const spawnLocations = [];
-  times(count, () => spawnLocations.push(sample(openTileIds)));
-  let currentPickupId = currentMap.entityIds.length;
-  const pickups = [];
 
-  spawnLocations.forEach(spawnLoc => {
+  times(count, () => {
+    let id = currentMap.entityIds.length;
+    const spawnLoc = sample(openTileIds);
     if (!Object.keys(currentMap.entityLocations).includes(spawnLoc)) {
-      pickups.push({
+      const egg = {
         ...PICKUP,
         ...idToCell(spawnLoc),
-        id: currentPickupId,
+        id: id,
         name: "Health Potion"
-      });
-      currentPickupId++;
+      };
+      hatch(egg, mapId);
     }
   });
 
-  pickups.forEach(pickup => {
-    const spawnLoc = `${pickup.x},${pickup.y}`;
-    setEntity(pickup);
-    addMapEntityIds([pickup.id], mapId);
-    addMapEntityLocations({ [spawnLoc]: [pickup.id] }, mapId);
-  });
+  // generate pickups
+  // const spawnLocations = [];
+  // times(count, () => spawnLocations.push(sample(openTileIds)));
+  // let currentPickupId = currentMap.entityIds.length;
+  // const pickups = [];
+
+  // spawnLocations.forEach(spawnLoc => {
+  //   if (!Object.keys(currentMap.entityLocations).includes(spawnLoc)) {
+  //     pickups.push({
+  //       ...PICKUP,
+  //       ...idToCell(spawnLoc),
+  //       id: currentPickupId,
+  //       name: "Health Potion"
+  //     });
+  //     currentPickupId++;
+  //   }
+  // });
+
+  // pickups.forEach(pickup => {
+  //   const spawnLoc = `${pickup.x},${pickup.y}`;
+  //   setEntity(pickup);
+  //   addMapEntityIds([pickup.id], mapId);
+  //   addMapEntityLocations({ [spawnLoc]: [pickup.id] }, mapId);
+  // });
 };

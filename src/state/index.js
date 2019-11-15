@@ -1,10 +1,8 @@
-import { PLAYER } from "../entities";
-
 const state = {
   config: {
     omniscience: false
   },
-  entities: { 0: { ...PLAYER } },
+  entities: {},
   maps: {
     currentMapId: 0,
     fov: [],
