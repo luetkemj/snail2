@@ -81,29 +81,4 @@ export const spawnPickups = ({ count, mapId = state.maps.currentMapId }) => {
       hatch(egg, mapId);
     }
   });
-
-  // generate pickups
-  // const spawnLocations = [];
-  // times(count, () => spawnLocations.push(sample(openTileIds)));
-  // let currentPickupId = currentMap.entityIds.length;
-  // const pickups = [];
-
-  // spawnLocations.forEach(spawnLoc => {
-  //   if (!Object.keys(currentMap.entityLocations).includes(spawnLoc)) {
-  //     pickups.push({
-  //       ...PICKUP,
-  //       ...idToCell(spawnLoc),
-  //       id: currentPickupId,
-  //       name: "Health Potion"
-  //     });
-  //     currentPickupId++;
-  //   }
-  // });
-
-  // pickups.forEach(pickup => {
-  //   const spawnLoc = `${pickup.x},${pickup.y}`;
-  //   setEntity(pickup);
-  //   addMapEntityIds([pickup.id], mapId);
-  //   addMapEntityLocations({ [spawnLoc]: [pickup.id] }, mapId);
-  // });
 };

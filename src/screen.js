@@ -2,8 +2,9 @@ import TextGrid from "overprint/overprint/text-grid";
 import Font from "overprint/overprint/font";
 
 import sprites from "./sprites";
+import { getSprite } from "./sprites";
 
-import { WIDTH, HEIGHT } from "./constants";
+import { WIDTH, HEIGHT, FONT_SIZE } from "./constants";
 
 import state from "./state";
 
@@ -12,7 +13,7 @@ const canvas = document.querySelector("#game");
 const grid = new TextGrid(canvas, {
   width: WIDTH,
   height: HEIGHT,
-  font: Font("Menlo", false, 15)
+  font: Font("Menlo", false, FONT_SIZE)
 });
 
 grid.onClick((x, y) => {
@@ -20,7 +21,7 @@ grid.onClick((x, y) => {
   const currentMap = state.maps[state.maps.currentMapId];
   const entities = currentMap.entityLocations[locId] || [];
 
-  console.log({
+  console.log("screen", {
     locId,
     x,
     y,
@@ -71,20 +72,20 @@ export const renderScreen = () => {
         grid.writeCell(
           entities[id].x,
           entities[id].y,
-          sprites[entities[id].sprite]
+          getSprite(entities[id].sprite)
         );
       }
     } else {
       grid.writeCell(
         entities[id].x,
         entities[id].y,
-        sprites[entities[id].sprite]
+        getSprite(entities[id].sprite)
       );
     }
   });
 
   // write player last!
-  grid.writeCell(player.x, player.y, sprites[player.sprite]);
+  grid.writeCell(player.x, player.y, getSprite(player.sprite));
 
   // Re-render
   grid.render();

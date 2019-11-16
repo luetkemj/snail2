@@ -1,9 +1,11 @@
+import { get } from "lodash";
 import Cell from "overprint/overprint/cell";
 
-export default {
+export const getSprite = path => get(sprites, path);
+
+const sprites = {
   PLAYER: Cell("@", "#DAA520"),
   MONSTER: Cell("M", "#0C9"),
-  CORPSE: Cell("%", "#ff6347"),
   POTION: Cell("!", "#DAA520"),
   WALL: {
     LIT: Cell("#", "#AAA"),
@@ -16,5 +18,12 @@ export default {
   CAVERN_FLOOR: {
     LIT: Cell("ʘ", "#71331E"),
     UNLIT: Cell("ʘ", "#4C2214")
+  },
+  CORPSE: {
+    FRESH: Cell("%", "#ff6347"),
+    ROTTEN: Cell("%", "#8FBC8B"),
+    BONES: Cell("%", "#F5F5F5")
   }
 };
+
+export default sprites;

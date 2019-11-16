@@ -88,15 +88,16 @@ const bump = (self, target) => {
 const attack = (self, target) => {
   const damage = 5;
   target.health -= 5;
-  console.log(`${self.name} attacks ${target.name} for ${damage} hp`);
+  state.menu.log.push(`${self.name} attacks ${target.name} for ${damage} hp`);
 
   if (target.health <= 0) {
     kill(target);
-    console.log(`${self.name} kills ${target.name}`);
+    state.menu.log.push(`${self.name} kills ${target.name}`);
   }
 };
 
 const kill = target => {
   target.blocking = false;
-  target.sprite = "CORPSE";
+  target.sprite = "CORPSE.FRESH";
+  target.deathTime = state.game.turn;
 };

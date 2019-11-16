@@ -1,6 +1,12 @@
 const state = {
+  game: {
+    turn: 0
+  },
   config: {
     omniscience: false
+  },
+  menu: {
+    log: []
   },
   entities: {},
   maps: {

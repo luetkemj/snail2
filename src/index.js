@@ -2,6 +2,7 @@ import state from "./state";
 import { init } from "./game";
 import { WIDTH, HEIGHT } from "./constants";
 import { renderScreen } from "./screen";
+import { renderMenu } from "./menu";
 import { attemptMove, drunkenWalk } from "./lib/movement";
 
 init();
@@ -60,6 +61,7 @@ function update() {
     console.log(action);
     handleAction(action);
     action = null;
+    state.game.turn += 1;
     playerTurn = false;
     console.log("state:", state);
   }
@@ -76,6 +78,17 @@ function update() {
         if (entities[id].health > 0) {
           const newLoc = drunkenWalk(entities[id].x, entities[id].y);
           attemptMove(newLoc.x, newLoc.y, id);
+        } else {
+          const timeSinceDeath = state.game.turn - entities[id].deathTime;
+          if (timeSinceDeath <= 100) {
+            entities[id].sprite = "CORPSE.FRESH";
+          }
+          if (timeSinceDeath <= 200 && timeSinceDeath > 100) {
+            entities[id].sprite = "CORPSE.ROTTEN";
+          }
+          if (timeSinceDeath > 200) {
+            entities[id].sprite = "CORPSE.BONES";
+          }
         }
       }
     }
@@ -88,6 +101,7 @@ console.log("init:", state);
 function gameLoop() {
   update();
   renderScreen(WIDTH, HEIGHT);
+  renderMenu();
   requestAnimationFrame(gameLoop);
 }
 
