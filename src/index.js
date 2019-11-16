@@ -57,16 +57,25 @@ function handleAction(action) {
 let playerTurn = true;
 
 function update() {
+  const gameOver = state.entities[0].health <= 0;
+
   if (action && playerTurn) {
-    console.log(action);
-    handleAction(action);
-    action = null;
-    state.game.turn += 1;
-    playerTurn = false;
-    console.log("state:", state);
+    // you are dead. make it game over
+    if (gameOver) {
+      state.menu.log.push("You died. Game Over");
+      document.removeEventListener("keydown", ev => input(ev.key));
+      playerTurn = false;
+    } else {
+      console.log(action);
+      handleAction(action);
+      action = null;
+      state.game.turn += 1;
+      playerTurn = false;
+      console.log("state:", state);
+    }
   }
 
-  if (!playerTurn) {
+  if (!playerTurn && !gameOver) {
     const { currentMapId } = state.maps;
     const currentMap = state.maps[currentMapId];
     const { entityIds } = currentMap;
