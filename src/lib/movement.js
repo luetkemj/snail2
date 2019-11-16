@@ -4,7 +4,8 @@ import { setEntityLocation } from "../state/setters/entity-setters";
 import {
   setMapEntityLocations,
   setMapRevealed,
-  setMapFov
+  setMapFov,
+  removeEntityFromMap
 } from "../state/setters/map-setters";
 import createFov from "./fov";
 import { WIDTH, HEIGHT } from "../constants";
@@ -35,18 +36,38 @@ export const canMoveTo = (x, y, id) => {
     return false;
   }
 
-  // if walking into blocking entity - MONSTER / PLAYER
+  // if walking into entity
   if (entityLocations[locId]) {
+    // blocking entities - MONSTER / PLAYER
     const blockers = entityLocations[locId].filter(
       entityId => entities[entityId].blocking
     );
 
-    const blockingEntities = blockers.map(entityId => entities[entityId]);
+    if (blockers.length) {
+      const blockingEntities = blockers.map(entityId => entities[entityId]);
 
-    if (blockingEntities.length) {
-      blockingEntities.forEach(entity => bump(entities[id], entity));
+      if (blockingEntities.length) {
+        blockingEntities.forEach(entity => bump(entities[id], entity));
 
-      return false;
+        return false;
+      }
+    }
+
+    // non blocking entities pickups
+    const pickups = entityLocations[locId].filter(
+      entityId => entities[entityId].type === "PICKUP"
+    );
+
+    if (pickups.length) {
+      const pickupEntities = pickups.map(id => entities[id]);
+
+      pickupEntities.forEach(pickup => {
+        entities[id][pickup.buff.prop] += pickup.buff.n;
+        state.menu.log.push(
+          `${entities[id].name} consumes ${pickup.name} for ${pickup.buff.n} ${pickup.buff.prop}`
+        );
+        removeEntityFromMap(locId, pickup.id, currentMapId);
+      });
     }
   }
 

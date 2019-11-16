@@ -1,4 +1,4 @@
-import { uniq } from "lodash";
+import { findIndex, uniq } from "lodash";
 import state from "../../state";
 
 export const setMap = map => (state.maps[map.id] = map);
@@ -18,13 +18,18 @@ export const setMapEntityIds = (entityIds, mapId) =>
   (state.maps[mapId].entityIds = entityIds);
 
 export const addMapEntityIds = (entityIds, mapId) => {
-  console.log({ entityIds, mapId });
   const currentMap = state.maps[mapId];
-  console.log(currentMap);
 
   currentMap.entityIds = currentMap.entityIds || [];
   currentMap.entityIds.push(...entityIds);
-  console.log({ state });
+};
+
+export const removeMapEntityIds = (entityIds, mapId) => {
+  const currentMap = state.maps[mapId];
+
+  currentMap.entityIds = currentMap.entityIds.filter(
+    id => !entityIds.includes(id)
+  );
 };
 
 export const setMapEntityLocations = (entityLocations, mapId) =>
@@ -33,7 +38,7 @@ export const setMapEntityLocations = (entityLocations, mapId) =>
 export const addMapEntityLocations = (entityLocations, mapId) => {
   state.maps[mapId].entityLocations = state.maps[mapId].entityLocations || {};
 
-  const keys = Object.keys(entityLocations).forEach(key => {
+  Object.keys(entityLocations).forEach(key => {
     // set [] at key if none exists
     state.maps[mapId].entityLocations[key] =
       state.maps[mapId].entityLocations[key] || [];
@@ -41,4 +46,16 @@ export const addMapEntityLocations = (entityLocations, mapId) => {
     // concat the old and new
     state.maps[mapId].entityLocations[key].push(...entityLocations[key]);
   });
+};
+
+export const removeMapEntityLocations = (locId, entityId, mapId) => {
+  let locArray = state.maps[mapId].entityLocations[locId];
+  locArray = locArray.filter(id => id !== entityId);
+};
+
+export const removeEntityFromMap = (locId, entityId, mapId) => {
+  console.log("removeEntityFromMap", { state, locId, entityId, mapId });
+  removeMapEntityIds([entityId], mapId);
+  removeMapEntityLocations(locId, entityId, mapId);
+  console.log("removeEntityFromMap", { state, locId, entityId, mapId });
 };

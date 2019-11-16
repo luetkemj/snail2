@@ -51,6 +51,14 @@ export const renderMenu = () => {
       grid.writeCell(WIDTH - idx - 1, 4, Cell(char, `rgba(218,165,32, 1)`))
     );
 
+  // health
+  `HP: ${state.entities[0].health}`
+    .split("")
+    .reverse()
+    .forEach((char, idx) =>
+      grid.writeCell(WIDTH - idx - 1, 3, Cell(char, `rgba(218,165,32, 1)`))
+    );
+
   // Re-render
   grid.render();
 };
