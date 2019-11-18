@@ -14,48 +14,42 @@ export const setMapRevealed = (revealedTileIds, mapId) => {
   );
 };
 
-export const setMapEntityIds = (entityIds, mapId) =>
-  (state.maps[mapId].entityIds = entityIds);
-
-export const addMapEntityIds = (entityIds, mapId) => {
-  const currentMap = state.maps[mapId];
-
-  currentMap.entityIds = currentMap.entityIds || [];
-  currentMap.entityIds.push(...entityIds);
-};
-
-export const removeMapEntityIds = (entityIds, mapId) => {
-  const currentMap = state.maps[mapId];
-
-  currentMap.entityIds = currentMap.entityIds.filter(
-    id => !entityIds.includes(id)
-  );
-};
-
 export const setMapEntityLocations = (entityLocations, mapId) =>
   (state.maps[mapId].entityLocations = entityLocations);
 
-export const addMapEntityLocations = (entityLocations, mapId) => {
-  state.maps[mapId].entityLocations = state.maps[mapId].entityLocations || {};
-
-  Object.keys(entityLocations).forEach(key => {
-    // set [] at key if none exists
-    state.maps[mapId].entityLocations[key] =
-      state.maps[mapId].entityLocations[key] || [];
-
-    // concat the old and new
-    state.maps[mapId].entityLocations[key].push(...entityLocations[key]);
-  });
+const addMapEntityId = (entityId, mapId) => {
+  const currentMap = state.maps[mapId];
+  // set currentMap entityIds array if needed
+  currentMap.entityIds = currentMap.entityIds || [];
+  currentMap.entityIds.push(entityId);
 };
 
-export const removeMapEntityLocations = (locId, entityId, mapId) => {
+const removeMapEntityId = (entityId, mapId) => {
+  const currentMap = state.maps[mapId];
+  currentMap.entityIds = currentMap.entityIds.filter(id => id !== entityId);
+};
+
+const addMapEntityLocation = (entityId, locId, mapId) => {
+  // set entity location on map if needed
+  state.maps[mapId].entityLocations = state.maps[mapId].entityLocations || {};
+  // set entitiyLocation array if needed
+  state.maps[mapId].entityLocations[locId] =
+    state.maps[mapId].entityLocations[locId] || [];
+  // actually add the entityId to locations array
+  state.maps[mapId].entityLocations[locId].push(entityId);
+};
+
+const removeMapEntityLocation = (locId, entityId, mapId) => {
   let locArray = state.maps[mapId].entityLocations[locId];
   locArray = locArray.filter(id => id !== entityId);
 };
 
+export const addEntityToMap = (entityId, locId, mapId) => {
+  addMapEntityId(entityId, mapId);
+  addMapEntityLocation(entityId, locId, mapId);
+};
+
 export const removeEntityFromMap = (locId, entityId, mapId) => {
-  console.log("removeEntityFromMap", { state, locId, entityId, mapId });
-  removeMapEntityIds([entityId], mapId);
-  removeMapEntityLocations(locId, entityId, mapId);
-  console.log("removeEntityFromMap", { state, locId, entityId, mapId });
+  removeMapEntityId(entityId, mapId);
+  removeMapEntityLocation(locId, entityId, mapId);
 };

@@ -1,19 +1,14 @@
 import { sample, times } from "lodash";
 import state from "../state";
 import { PLAYER, MONSTER, PICKUP } from "../entities";
-import { setEntityLocation, setEntity } from "../state/setters/entity-setters";
-import {
-  addMapEntityLocations,
-  addMapEntityIds
-} from "../state/setters/map-setters";
+import { setEntity } from "../state/setters/entity-setters";
+import { addEntityToMap } from "../state/setters/map-setters";
 import { idToCell } from "./grid";
 
 const hatch = (egg, mapId) => {
   const { x, y, id } = egg;
   setEntity(egg);
-  setEntityLocation(x, y, id);
-  addMapEntityIds([id], mapId);
-  addMapEntityLocations({ [`${x},${y}`]: [id] }, mapId);
+  addEntityToMap(id, `${x},${y}`, mapId);
 };
 
 export const spawnPlayer = (loc, mapId = state.maps.currentMapId) =>

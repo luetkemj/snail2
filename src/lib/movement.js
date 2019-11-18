@@ -87,7 +87,10 @@ export const attemptMove = (x, y, id) => {
     }
 
     setEntityLocation(x, y, id);
-
+    // todo: this doesn't have to reduce on everyone.
+    // if we stash the locId from the entity BEFORE setting a new location
+    // we can filter out the id, remove the array if it's empty and set the new one
+    // seems like a lot of work when we can just reduce on the group like this...
     const { entityIds } = state.maps[currentMapId];
     const { entities } = state;
     const newEntityLocations = entityIds.reduce((acc, entityId) => {
