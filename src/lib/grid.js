@@ -1,5 +1,12 @@
 import { WIDTH, HEIGHT } from "../constants";
 
+const CARDINAL = [
+  { x: -1, y: 0 },
+  { x: 1, y: 0 },
+  { x: 0, y: -1 },
+  { x: 0, y: 1 }
+];
+
 export const rectangle = ({ x, y, width, height, hasWalls }, tileProps) => {
   const tiles = {};
 
@@ -56,4 +63,23 @@ export const isOnMapEdge = (x, y) => {
   if (x === WIDTH - 1) return true; // south edge
   if (y === HEIGHT - 1) return true; // east edge
   return false;
+};
+
+export const adjacentPoints = (x, y) => {
+  const points = [];
+  for (let direction of CARDINAL) {
+    let candidate = {
+      x: x + direction.x,
+      y: y + direction.y
+    };
+    if (
+      candidate.x >= 0 &&
+      candidate.x < WIDTH &&
+      candidate.y >= 0 &&
+      candidate.y < HEIGHT
+    ) {
+      points.push(candidate);
+    }
+  }
+  return points;
 };
