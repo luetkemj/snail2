@@ -7,8 +7,10 @@ import {
   setMapFov,
   removeEntityFromMap
 } from "../state/setters/map-setters";
+import { getCurrentMap } from "../state/getters/map-getters";
 import createFov from "./fov";
 import { WIDTH, HEIGHT } from "../constants";
+import { getNeighbors, cellToId } from "./grid";
 
 const CARDINAL = [
   { x: -1, y: 0 },
@@ -124,4 +126,21 @@ const kill = target => {
   target.blocking = false;
   target.sprite = "CORPSE.FRESH";
   target.deathTime = state.game.turn;
+};
+
+export const walkDijkstra = id => {
+  // use a getter to get dMap
+  const neighbors = getNeighbors(state.entities[id].x, state.entities[id].y);
+  let cell;
+  let distance = 10000000;
+  neighbors.forEach(c => {
+    const dist = state.maps.dijkstra[cellToId(c)];
+    console.log(dist);
+    if (dist < distance) {
+      distance = dist;
+      cell = c;
+    }
+  });
+
+  attemptMove(cell.x, cell.y, id);
 };

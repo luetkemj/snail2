@@ -1,8 +1,12 @@
 import state from "../../state";
 
 export const getCurrentMap = () => {
-  const currentMapId = state.maps;
-  return state.maps[currentMapId];
+  const { currentMapId } = state.maps;
+  const currentMap = state.maps[currentMapId];
+
+  console.log({ currentMapId, currentMapId });
+
+  return currentMap;
 };
 
 export const getEntitiesAt = (x, y) =>

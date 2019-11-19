@@ -57,6 +57,8 @@ export const idToCell = id => {
   return { x: parseInt(coords[0], 10), y: parseInt(coords[1], 10) };
 };
 
+export const cellToId = ({ x, y }) => `${x},${y}`;
+
 export const isOnMapEdge = (x, y) => {
   if (x === 0) return true; // north edge
   if (y === 0) return true; // west edge
@@ -65,7 +67,7 @@ export const isOnMapEdge = (x, y) => {
   return false;
 };
 
-export const adjacentPoints = (x, y) => {
+export const getNeighbors = (x, y) => {
   const points = [];
   for (let direction of CARDINAL) {
     let candidate = {
@@ -83,3 +85,5 @@ export const adjacentPoints = (x, y) => {
   }
   return points;
 };
+
+export const getNeighborIds = (x, y) => getNeighbors(x, y).map(cellToId);

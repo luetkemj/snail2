@@ -3,7 +3,10 @@ import { init } from "./game";
 import { WIDTH, HEIGHT } from "./constants";
 import { renderScreen } from "./screen";
 import { renderMenu } from "./menu";
-import { attemptMove, drunkenWalk } from "./lib/movement";
+import { attemptMove, drunkenWalk, walkDijkstra } from "./lib/movement";
+import { getPlayer } from "./state/getters/entity-getters";
+import { getCurrentMap } from "./state/getters/map-getters";
+import { dijkstra } from "./lib/dijkstra";
 
 init();
 
@@ -46,8 +49,7 @@ function handleAction(action) {
     return;
   }
 
-  const player = state.entities[0];
-
+  const player = getPlayer();
   const mx = Math.min(WIDTH - 1, Math.max(0, player.x + action.x));
   const my = Math.min(HEIGHT - 1, Math.max(0, player.y + action.y));
 
@@ -57,7 +59,7 @@ function handleAction(action) {
 let playerTurn = true;
 
 function update() {
-  const gameOver = state.entities[0].health <= 0;
+  const gameOver = getPlayer().health <= 0;
 
   if (action && playerTurn) {
     // you are dead. make it game over
@@ -71,6 +73,11 @@ function update() {
       action = null;
       state.game.turn += 1;
       playerTurn = false;
+
+      const nonMonsterIds = getCurrentMap().entityIds.filter(
+        id => state.entities[id].sprite !== "MONSTER"
+      );
+      dijkstra(nonMonsterIds.map(id => state.entities[id]));
       console.log("state:", state);
     }
   }
@@ -85,8 +92,9 @@ function update() {
       if (id !== 0) {
         // skip turn if dead
         if (entities[id].health > 0) {
-          const newLoc = drunkenWalk(entities[id].x, entities[id].y);
-          attemptMove(newLoc.x, newLoc.y, id);
+          // const newLoc = drunkenWalk(entities[id].x, entities[id].y);
+          // attemptMove(newLoc.x, newLoc.y, id);
+          walkDijkstra(id);
         } else {
           const timeSinceDeath = state.game.turn - entities[id].deathTime;
           if (timeSinceDeath <= 100) {

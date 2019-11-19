@@ -13,6 +13,7 @@ const state = {
     currentMapId: 0,
     fov: [],
     fovs: {},
+    dijkstra: {},
     0: {
       id: 0,
       tiles: {},
