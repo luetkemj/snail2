@@ -1,15 +1,15 @@
 import { sample } from "lodash";
 import state from "../state";
 import { setEntityLocation } from "../state/setters/entity-setters";
+import { getEntity } from "../state/getters/entity-getters";
 import {
   setMapEntityLocations,
   setMapRevealed,
   setMapFov,
   removeEntityFromMap
 } from "../state/setters/map-setters";
-import { getCurrentMap } from "../state/getters/map-getters";
 import createFov from "./fov";
-import { WIDTH, HEIGHT } from "../constants";
+import { WIDTH, HEIGHT, DIJKSTRA_MAX } from "../constants";
 import { getNeighbors, cellToId } from "./grid";
 
 const CARDINAL = [
@@ -42,14 +42,14 @@ export const canMoveTo = (x, y, id) => {
   if (entityLocations[locId]) {
     // blocking entities - MONSTER / PLAYER
     const blockers = entityLocations[locId].filter(
-      entityId => entities[entityId].blocking
+      id => getEntity(id).blocking
     );
 
     if (blockers.length) {
-      const blockingEntities = blockers.map(entityId => entities[entityId]);
+      const blockingEntities = blockers.map(id => getEntity(id));
 
       if (blockingEntities.length) {
-        blockingEntities.forEach(entity => bump(entities[id], entity));
+        blockingEntities.forEach(entity => bump(getEntity(id), entity));
 
         return false;
       }
@@ -57,16 +57,18 @@ export const canMoveTo = (x, y, id) => {
 
     // non blocking entities pickups
     const pickups = entityLocations[locId].filter(
-      entityId => entities[entityId].type === "PICKUP"
+      id => getEntity(id).type === "PICKUP"
     );
 
     if (pickups.length) {
-      const pickupEntities = pickups.map(id => entities[id]);
+      const pickupEntities = pickups.map(id => getEntity(id));
 
       pickupEntities.forEach(pickup => {
-        entities[id][pickup.buff.prop] += pickup.buff.n;
+        getEntity(id)[pickup.buff.prop] += pickup.buff.n;
         state.menu.log.push(
-          `${entities[id].name} consumes ${pickup.name} for ${pickup.buff.n} ${pickup.buff.prop}`
+          `${getEntity(id).name} consumes ${pickup.name} for ${pickup.buff.n} ${
+            pickup.buff.prop
+          }`
         );
         removeEntityFromMap(locId, pickup.id, currentMapId);
       });
@@ -130,16 +132,32 @@ const kill = target => {
 // if in a stuck pattern (no cell is least - should go into a drunken walk)
 export const walkDijkstra = id => {
   // use a getter to get dMap
-  const neighbors = getNeighbors(state.entities[id].x, state.entities[id].y);
-  let cell;
-  let distance = 10000000;
-  neighbors.forEach(c => {
-    const dist = state.maps.dijkstra[cellToId(c)];
-    if (dist < distance) {
-      distance = dist;
-      cell = c;
+  const neighbors = getNeighbors(getEntity(id).x, getEntity(id).y);
+
+  const distSet = new Set();
+  neighbors.forEach(nbor => {
+    const dist = state.maps.dijkstra[cellToId(nbor)];
+    if (dist) {
+      distSet.add(dist);
     }
   });
 
-  attemptMove(cell.x, cell.y, id);
+  const distArray = [...distSet];
+
+  if (distArray.length === 1 && distArray[0] === DIJKSTRA_MAX) {
+    return false;
+  } else {
+    let cell;
+    let distance = DIJKSTRA_MAX;
+    neighbors.forEach(c => {
+      const dist = state.maps.dijkstra[cellToId(c)];
+      if (dist < distance) {
+        distance = dist;
+        cell = c;
+      }
+    });
+
+    attemptMove(cell.x, cell.y, id);
+    return true;
+  }
 };

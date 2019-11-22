@@ -1,3 +1,4 @@
 import state from "..";
 
-export const getPlayer = () => state.entities[0];
+export const getPlayer = () => getEntity(0);
+export const getEntity = id => state.entities[id];

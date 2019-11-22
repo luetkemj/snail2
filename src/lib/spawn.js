@@ -1,6 +1,9 @@
 import { sample, times } from "lodash";
 import state from "../state";
-import { PLAYER, MONSTER, PICKUP } from "../entities";
+import { PLAYER, PICKUP } from "../entities";
+
+import goblin from "../entities/goblin";
+
 import { setEntity } from "../state/setters/entity-setters";
 import { addEntityToMap } from "../state/setters/map-setters";
 import { idToCell } from "./grid";
@@ -17,42 +20,15 @@ export const spawnPlayer = (loc, mapId = state.maps.currentMapId) =>
 export const spawnMonsters = ({ count, mapId = state.maps.currentMapId }) => {
   const currentMap = state.maps[mapId];
   const { openTileIds } = currentMap;
-  const goblinNames = [
-    "Akbug",
-    "Argav",
-    "Brigadve",
-    "Corbakl",
-    "Cruncha",
-    "Frum",
-    "Gelmax",
-    "Glibl",
-    "Glogroth Von Bloov",
-    "Glovd",
-    "Gorf",
-    "Grelth",
-    "Grickstah",
-    "Griga",
-    "Groovilla Dar Trog",
-    "Khroongah",
-    "Kosrik",
-    "Makdur",
-    "Porgl",
-    "Throngul",
-    "Thuk",
-    "Tryxtah",
-    "Vorlag",
-    "Yorvua"
-  ];
 
   times(count, () => {
     let currentMonsterId = currentMap.entityIds.length;
     const spawnLoc = sample(openTileIds);
     if (!Object.keys(currentMap.entityLocations).includes(spawnLoc)) {
       const egg = {
-        ...MONSTER,
+        ...goblin(),
         ...idToCell(spawnLoc),
-        id: currentMonsterId,
-        name: sample(goblinNames)
+        id: currentMonsterId
       };
       hatch(egg, mapId);
     }

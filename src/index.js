@@ -90,9 +90,10 @@ function update() {
       if (id !== 0) {
         // skip turn if dead
         if (entities[id].health > 0) {
-          // const newLoc = drunkenWalk(entities[id].x, entities[id].y);
-          // attemptMove(newLoc.x, newLoc.y, id);
-          walkDijkstra(id);
+          const entity = entities[id];
+          if (entity.hasOwnProperty("volition")) {
+            entity.volition(id);
+          }
         } else {
           const timeSinceDeath = state.game.turn - entities[id].deathTime;
           if (timeSinceDeath <= 100) {
