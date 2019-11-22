@@ -1,3 +1,4 @@
+import { sample } from "lodash";
 import { WIDTH, HEIGHT } from "../constants";
 
 const CARDINAL = [
@@ -87,3 +88,10 @@ export const getNeighbors = (x, y) => {
 };
 
 export const getNeighborIds = (x, y) => getNeighbors(x, y).map(cellToId);
+
+export const randomNeighbor = (startX, startY) => {
+  const direction = sample(CARDINAL);
+  const x = startX + direction.x;
+  const y = startY + direction.y;
+  return { x, y };
+};

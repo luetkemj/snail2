@@ -3,7 +3,7 @@ import { init } from "./game";
 import { WIDTH, HEIGHT } from "./constants";
 import { renderScreen } from "./screen";
 import { renderMenu } from "./menu";
-import { attemptMove, drunkenWalk, walkDijkstra } from "./lib/movement";
+import { attemptMove } from "./lib/movement";
 import { getPlayer } from "./state/getters/entity-getters";
 import { getCurrentMap } from "./state/getters/map-getters";
 import { dijkstra } from "./lib/dijkstra";

@@ -1,4 +1,3 @@
-import { sample } from "lodash";
 import state from "../state";
 import { setEntityLocation } from "../state/setters/entity-setters";
 import { getEntity } from "../state/getters/entity-getters";
@@ -10,20 +9,13 @@ import {
 } from "../state/setters/map-setters";
 import createFov from "./fov";
 import { WIDTH, HEIGHT, DIJKSTRA_MAX } from "../constants";
-import { getNeighbors, cellToId } from "./grid";
+import { getNeighbors, cellToId, randomNeighbor } from "./grid";
 
-const CARDINAL = [
-  { x: -1, y: 0 },
-  { x: 1, y: 0 },
-  { x: 0, y: -1 },
-  { x: 0, y: 1 }
-];
-
-export const drunkenWalk = (startX, startY) => {
-  const direction = sample(CARDINAL);
-  const x = startX + direction.x;
-  const y = startY + direction.y;
-  return { x, y };
+export const drunkenWalk = id => {
+  const entity = getEntity(id);
+  const candidate = randomNeighbor(entity.x, entity.y);
+  attemptMove(candidate.x, candidate.y, id);
+  return true;
 };
 
 export const canMoveTo = (x, y, id) => {

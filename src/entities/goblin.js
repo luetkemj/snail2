@@ -29,9 +29,7 @@ const goblinNames = [
 ];
 
 const move = id => {
-  // const newLoc = drunkenWalk(entities[id].x, entities[id].y);
-  // attemptMove(newLoc.x, newLoc.y, id);
-  walkDijkstra(id);
+  walkDijkstra(id) || drunkenWalk(id);
 };
 
 const goblin = () => ({

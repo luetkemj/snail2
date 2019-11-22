@@ -1,7 +1,6 @@
 import rung from "rung/src/rung";
 import { compact, times } from "lodash";
-import { rectangle, rectsIntersect, isOnMapEdge } from "./grid";
-import { drunkenWalk } from "./movement";
+import { rectangle, rectsIntersect, isOnMapEdge, randomNeighbor } from "./grid";
 
 function digHorizontalPassage(tiles, x1, x2, y) {
   const start = Math.min(x1, x2);
@@ -26,7 +25,7 @@ function digVerticalPassage(tiles, y1, y2, x) {
 }
 
 const digDrunkenWalk = (x, y, tiles) => {
-  let loc = drunkenWalk(x, y);
+  let loc = randomNeighbor(x, y);
   // if new loc is a tile and not on the map edge
   if (tiles[`${[loc.x]},${[loc.y]}`] && !isOnMapEdge(loc.x, loc.y)) {
     tiles[`${loc.x},${loc.y}`] = {
