@@ -21,7 +21,9 @@ export const dijkstra = (goals, weights = []) => {
     neighbors.forEach(neighborId => {
       if (!distance[neighborId]) {
         if (cells[neighborId] && !cells[neighborId].blocking) {
-          distance[neighborId] = distance[current] + 1;
+          let dscore = distance[current] + 1;
+          dscore = dscore > 10 ? 100000 : dscore;
+          distance[neighborId] = dscore;
           frontier.push(neighborId);
         }
       }
@@ -36,6 +38,4 @@ export const dijkstra = (goals, weights = []) => {
 
   // todo: make a setter for this!
   state.maps.dijkstra = distance;
-  // console.log(distance);
-  // return distance;
 };

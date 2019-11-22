@@ -68,17 +68,15 @@ function update() {
       document.removeEventListener("keydown", ev => input(ev.key));
       playerTurn = false;
     } else {
-      console.log(action);
       handleAction(action);
       action = null;
       state.game.turn += 1;
       playerTurn = false;
 
       const nonMonsterIds = getCurrentMap().entityIds.filter(
-        id => state.entities[id].sprite !== "MONSTER"
+        id => state.entities[id].sprite === "PLAYER"
       );
       dijkstra(nonMonsterIds.map(id => state.entities[id]));
-      console.log("state:", state);
     }
   }
 

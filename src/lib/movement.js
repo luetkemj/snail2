@@ -107,7 +107,6 @@ export const attemptMove = (x, y, id) => {
 };
 
 const bump = (self, target) => {
-  console.log(`${self.name} bumps into ${target.name}`);
   attack(self, target);
 };
 
@@ -128,6 +127,7 @@ const kill = target => {
   target.deathTime = state.game.turn;
 };
 
+// if in a stuck pattern (no cell is least - should go into a drunken walk)
 export const walkDijkstra = id => {
   // use a getter to get dMap
   const neighbors = getNeighbors(state.entities[id].x, state.entities[id].y);
@@ -135,7 +135,6 @@ export const walkDijkstra = id => {
   let distance = 10000000;
   neighbors.forEach(c => {
     const dist = state.maps.dijkstra[cellToId(c)];
-    console.log(dist);
     if (dist < distance) {
       distance = dist;
       cell = c;
