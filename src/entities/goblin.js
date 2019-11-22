@@ -37,7 +37,7 @@ const goblin = () => ({
   x: 0,
   y: 0,
   name: sample(goblinNames),
-  sprite: "MONSTER",
+  sprite: "GOBLIN",
   blocking: true,
   health: 10,
   type: "MONSTER",

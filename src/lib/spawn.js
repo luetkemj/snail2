@@ -3,6 +3,7 @@ import state from "../state";
 import { PLAYER, PICKUP } from "../entities";
 
 import goblin from "../entities/goblin";
+import rat from "../entities/rat";
 
 import { setEntity } from "../state/setters/entity-setters";
 import { addEntityToMap } from "../state/setters/map-setters";
@@ -17,6 +18,8 @@ const hatch = (egg, mapId) => {
 export const spawnPlayer = (loc, mapId = state.maps.currentMapId) =>
   hatch({ ...PLAYER, x: loc.x, y: loc.y, id: 0 }, mapId);
 
+const monsters = [goblin, rat];
+
 export const spawnMonsters = ({ count, mapId = state.maps.currentMapId }) => {
   const currentMap = state.maps[mapId];
   const { openTileIds } = currentMap;
@@ -26,7 +29,7 @@ export const spawnMonsters = ({ count, mapId = state.maps.currentMapId }) => {
     const spawnLoc = sample(openTileIds);
     if (!Object.keys(currentMap.entityLocations).includes(spawnLoc)) {
       const egg = {
-        ...goblin(),
+        ...sample(monsters)(),
         ...idToCell(spawnLoc),
         id: currentMonsterId
       };

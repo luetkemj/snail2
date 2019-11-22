@@ -122,9 +122,9 @@ const kill = target => {
 };
 
 // if in a stuck pattern (no cell is least - should go into a drunken walk)
-export const walkDijkstra = id => {
-  // use a getter to get dMap
-  const neighbors = getNeighbors(getEntity(id).x, getEntity(id).y);
+export const walkDijkstra = entityId => {
+  const entity = getEntity(entityId);
+  const neighbors = getNeighbors(entity.x, entity.y);
 
   const distSet = new Set();
   neighbors.forEach(nbor => {
@@ -149,7 +149,7 @@ export const walkDijkstra = id => {
       }
     });
 
-    attemptMove(cell.x, cell.y, id);
+    attemptMove(cell.x, cell.y, entity.id);
     return true;
   }
 };

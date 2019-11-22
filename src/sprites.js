@@ -6,6 +6,9 @@ export const getSprite = path => get(sprites, path);
 const sprites = {
   PLAYER: Cell("@", "#DAA520"),
   MONSTER: Cell("M", "#0C9"),
+  GOBLIN: Cell("g", "#0C9"),
+  RAT: Cell("r", "#F1948A"),
+
   POTION: Cell("!", "#DAA520"),
   WALL: {
     LIT: Cell("#", "#AAA"),
