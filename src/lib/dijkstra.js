@@ -1,8 +1,5 @@
-import state from "../state";
-
 import { cellToId, getNeighborIds, idToCell } from "./grid";
 import { getCurrentMap } from "../state/getters/map-getters";
-import { DIJKSTRA_MAX } from "../constants";
 
 export const dijkstra = (goals, weights = []) => {
   const cells = getCurrentMap().tiles;
@@ -23,7 +20,6 @@ export const dijkstra = (goals, weights = []) => {
       if (!distance[neighborId]) {
         if (cells[neighborId] && !cells[neighborId].blocking) {
           let dscore = distance[current] + 1;
-          dscore = dscore > 10 ? DIJKSTRA_MAX : dscore;
           distance[neighborId] = dscore;
           frontier.push(neighborId);
         }
@@ -37,6 +33,5 @@ export const dijkstra = (goals, weights = []) => {
     distance[id] = weights[idx] || 0;
   });
 
-  // todo: make a setter for this!
-  state.maps.dijkstra = distance;
+  return distance;
 };

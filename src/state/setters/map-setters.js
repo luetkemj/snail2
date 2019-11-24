@@ -1,5 +1,8 @@
 import { findIndex, uniq } from "lodash";
 import state from "../../state";
+import { getCurrentMap } from "../../state/getters/map-getters";
+import { getEntity } from "../../state/getters/entity-getters";
+import { dijkstra } from "../../lib/dijkstra";
 
 export const setMap = map => (state.maps[map.id] = map);
 
@@ -52,4 +55,18 @@ export const addEntityToMap = (entityId, locId, mapId) => {
 export const removeEntityFromMap = (locId, entityId, mapId) => {
   removeMapEntityId(entityId, mapId);
   removeMapEntityLocation(locId, entityId, mapId);
+};
+
+export const setDijkstra = (name, graph) => {
+  state.maps.dijkstra[name] = graph;
+};
+
+export const setEntityDijkstra = kind => {
+  const ids = getCurrentMap().entityIds.filter(
+    id => getEntity(id).kind === kind
+  );
+  const entities = ids.map(id => getEntity(id));
+  const targetIds = [...entities];
+
+  return setDijkstra(kind, dijkstra(targetIds));
 };

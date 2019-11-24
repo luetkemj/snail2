@@ -1,3 +1,5 @@
+import { isEqual } from "lodash";
+
 import state from "../state";
 import { setEntityLocation } from "../state/setters/entity-setters";
 import { getEntity } from "../state/getters/entity-getters";
@@ -5,8 +7,10 @@ import {
   setMapEntityLocations,
   setMapRevealed,
   setMapFov,
-  removeEntityFromMap
+  removeEntityFromMap,
+  setEntityDijkstra
 } from "../state/setters/map-setters";
+import { getDijkstra } from "../state/getters/map-getters";
 import createFov from "./fov";
 import { WIDTH, HEIGHT, DIJKSTRA_MAX } from "../constants";
 import { getNeighbors, cellToId, randomNeighbor } from "./grid";
@@ -116,19 +120,29 @@ const attack = (self, target) => {
 };
 
 const kill = target => {
+  const kind = target.kind;
+
   target.blocking = false;
   target.sprite = "CORPSE.FRESH";
+  target.kind = "corpse";
   target.deathTime = state.game.turn;
+  setEntityDijkstra(kind);
+  setEntityDijkstra("corpse");
 };
 
 // if in a stuck pattern (no cell is least - should go into a drunken walk)
-export const walkDijkstra = entityId => {
+export const walkDijkstra = (mapName, entityId, stealth = DIJKSTRA_MAX) => {
+  const dijkstra = getDijkstra(mapName);
+
+  // if the dijkstra we care about has not yet been created we should bail
+  if (!dijkstra) return;
+
   const entity = getEntity(entityId);
   const neighbors = getNeighbors(entity.x, entity.y);
 
   const distSet = new Set();
   neighbors.forEach(nbor => {
-    const dist = state.maps.dijkstra[cellToId(nbor)];
+    const dist = dijkstra[cellToId(nbor)];
     if (dist) {
       distSet.add(dist);
     }
@@ -136,20 +150,24 @@ export const walkDijkstra = entityId => {
 
   const distArray = [...distSet];
 
-  if (distArray.length === 1 && distArray[0] === DIJKSTRA_MAX) {
+  if (distArray.length === 1) {
     return false;
   } else {
     let cell;
-    let distance = DIJKSTRA_MAX;
+    let distance = stealth;
     neighbors.forEach(c => {
-      const dist = state.maps.dijkstra[cellToId(c)];
+      const dist = dijkstra[cellToId(c)];
       if (dist < distance) {
         distance = dist;
         cell = c;
       }
     });
 
+    if (!cell) return false;
+
     attemptMove(cell.x, cell.y, entity.id);
     return true;
   }
 };
+
+export const hasMoved = (loc1, loc2) => isEqual(loc1, loc2);

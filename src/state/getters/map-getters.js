@@ -9,3 +9,5 @@ export const getCurrentMap = () => {
 
 export const getEntitiesAt = (x, y) =>
   getCurrentMap().entityLocations[`${x},${y}`];
+
+export const getDijkstra = name => state.maps.dijkstra[name];

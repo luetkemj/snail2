@@ -1,7 +1,8 @@
 import { sample, times } from "lodash";
 import state from "../state";
-import { PLAYER, PICKUP } from "../entities";
 
+import player from "../entities/player";
+import potion from "../entities/potion";
 import goblin from "../entities/goblin";
 import rat from "../entities/rat";
 
@@ -16,7 +17,7 @@ const hatch = (egg, mapId) => {
 };
 
 export const spawnPlayer = (loc, mapId = state.maps.currentMapId) =>
-  hatch({ ...PLAYER, x: loc.x, y: loc.y, id: 0 }, mapId);
+  hatch({ ...player(), x: loc.x, y: loc.y, id: 0 }, mapId);
 
 const monsters = [goblin, rat];
 
@@ -47,7 +48,7 @@ export const spawnPickups = ({ count, mapId = state.maps.currentMapId }) => {
     const spawnLoc = sample(openTileIds);
     if (!Object.keys(currentMap.entityLocations).includes(spawnLoc)) {
       const egg = {
-        ...PICKUP,
+        ...potion(),
         ...idToCell(spawnLoc),
         id: id,
         name: "Health Potion"

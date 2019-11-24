@@ -6,6 +6,7 @@ import { renderMenu } from "./menu";
 import { attemptMove } from "./lib/movement";
 import { getPlayer } from "./state/getters/entity-getters";
 import { getCurrentMap } from "./state/getters/map-getters";
+import { setDijkstra } from "./state/setters/map-setters";
 import { dijkstra } from "./lib/dijkstra";
 
 init();
@@ -76,8 +77,12 @@ function update() {
       const nonMonsterIds = getCurrentMap().entityIds.filter(
         id => state.entities[id].sprite === "PLAYER"
       );
-      dijkstra(nonMonsterIds.map(id => state.entities[id]));
+      setDijkstra(
+        "player",
+        dijkstra(nonMonsterIds.map(id => state.entities[id]))
+      );
     }
+    console.log(state);
   }
 
   if (!playerTurn && !gameOver) {
